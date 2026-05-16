@@ -1,0 +1,44 @@
+services:
+  # --- Backend API: the joke service ---
+  - type: web
+    name: dad-joke-machine-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      # Update this list after you know the static site URL(s)
+      - key: ALLOWED_ORIGINS
+        value: "https://dad-joke-machine.onrender.com,https://dadjokesmachine.com,https://www.dadjokesmachine.com"
+
+  # --- Frontend: the static site ---
+  - type: web
+    name: dad-joke-machine
+    runtime: static
+    rootDir: frontend
+    plan: free
+    buildCommand: ""
+    staticPublishPath: .
+    autoDeploy: true
+    pullRequestPreviewsEnabled: false
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /jokes.json
+        name: Cache-Control
+        value: public, max-age=3600
+      - path: /style.css
+        name: Cache-Control
+        value: public, max-age=86400
+      - path: /app.js
+        name: Cache-Control
+        value: public, max-age=86400

@@ -1,0 +1,10 @@
+.DS_Store
+.env
+.env.*
+node_modules/
+backend/node_modules/
+*.log
+.vscode/
+.idea/
+/tmp/
+.claude/settings.local.json

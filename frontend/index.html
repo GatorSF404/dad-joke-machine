@@ -299,6 +299,10 @@
           </g>
           <!-- needle -->
           <g class="gauge-needle">
+            <!-- Invisible anchor at y=42: balances the needle's bounding box so
+                 the CSS-computed "center" used by transform-origin lands on the
+                 actual pivot at (0,0) instead of halfway up the needle. -->
+            <rect x="-0.5" y="41.5" width="1" height="1" fill="none" stroke="none"/>
             <polygon points="0,4 -3,4 -1,-42 1,-42 3,4" fill="#dc2626"/>
             <circle r="5" fill="#1f2937"/>
             <circle r="2" fill="#fef3c7"/>

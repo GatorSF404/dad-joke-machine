@@ -225,7 +225,7 @@
       modal.className = 'about-modal open';
       modal.innerHTML = `
         <div class="about-modal-inner">
-          <h2>The Dad Joke Machine</h2>
+          <h2>The Dad Jokes Machine</h2>
           <p>A wholly unnecessary contraption that delivers dad jokes via a fictional steam-powered process.</p>
           <p style="font-size:0.95rem;opacity:0.8;">Jokes sourced from <a href="https://icanhazdadjoke.com" target="_blank" rel="noopener">icanhazdadjoke.com</a>. Rendered fresh. Reheated on demand.</p>
           <button type="button" id="aboutClose">Close</button>

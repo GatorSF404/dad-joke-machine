@@ -19,6 +19,10 @@
   let isRunning = false;
   let pressCount = 0;
   let jokeSource = 'unknown';
+  // If the user presses the button before jokes finish loading (typical during
+  // the free-tier API cold start), we queue the press and auto-fire as soon as
+  // jokes arrive. Avoids the "I pushed it and nothing happened" UX.
+  let pendingPress = false;
 
   // API base: localhost in dev, the Render Web Service URL in prod (from <meta name="api-base">).
   const API_BASE = (() => {
@@ -55,6 +59,16 @@
         jokes = [{ id: 'fallback', joke: "Why did the website fail? It lost its connection... emotionally." }];
         jokeSource = 'fallback';
       }
+    }
+    // Reset waking-state UI if we were showing it
+    if (els.status && els.status.textContent === 'WAKING') {
+      els.status.textContent = 'READY';
+      els.status.setAttribute('fill', '#86efac');
+    }
+    // If the user pressed the button during the cold start, fire it now
+    if (pendingPress && !isRunning) {
+      pendingPress = false;
+      setTimeout(() => runMachine(), 250);
     }
   }
   loadJokes();
@@ -134,7 +148,18 @@
   function runMachine() {
     if (isRunning) return;
     if (jokes.length === 0) {
-      els.jokeText.textContent = "Jokes still loading... one sec.";
+      // Cold-start path: API hasn't responded yet. Queue the press so the
+      // machine auto-fires the moment jokes load, and give the user feedback
+      // (button click, boing, status change) so it doesn't feel broken.
+      pendingPress = true;
+      playBoing();
+      els.button.classList.add('pressed');
+      setTimeout(() => els.button.classList.remove('pressed'), 200);
+      els.jokeText.textContent = "Warming up the machine... hold tight.";
+      if (els.status) {
+        els.status.textContent = 'WAKING';
+        els.status.setAttribute('fill', '#fbbf24');
+      }
       return;
     }
     isRunning = true;

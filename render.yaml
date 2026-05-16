@@ -17,11 +17,12 @@ services:
         value: "https://dad-joke-machine.onrender.com,https://dadjokesmachine.com,https://www.dadjokesmachine.com"
 
   # --- Frontend: the static site ---
+  # Note: no `plan` field here — static sites on Render are always free; the
+  # field is only valid on Web Services / Workers / Private Services.
   - type: web
     name: dad-joke-machine
     runtime: static
     rootDir: frontend
-    plan: free
     buildCommand: ""
     staticPublishPath: .
     autoDeploy: true

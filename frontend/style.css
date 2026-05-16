@@ -293,7 +293,7 @@ body::before {
 .big-button {
   position: relative;
   width: 170px;
-  height: 170px;
+  height: 160px;
   background: transparent;
   border: none;
   padding: 0;
@@ -303,17 +303,6 @@ body::before {
 }
 .big-button:focus-visible .big-button-top {
   box-shadow: 0 0 0 4px #fef3c7, 0 0 0 8px var(--c-accent), inset 0 -10px 0 var(--c-accent-dark), inset 0 6px 16px rgba(255,255,255,0.35);
-}
-.big-button-base {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 150px;
-  height: 28px;
-  background: linear-gradient(180deg, #475569, #1e293b);
-  border-radius: 50%;
-  box-shadow: 0 6px 0 #0f172a, 0 14px 18px var(--c-shadow);
 }
 .big-button-top {
   position: absolute;
@@ -421,9 +410,8 @@ body::before {
 @media (max-width: 600px) {
   .stage { padding: 1.5rem 0.75rem 2rem; gap: 1rem; }
   .machine { border-width: 6px; border-radius: 16px; }
-  .big-button { width: 150px; height: 150px; }
+  .big-button { width: 150px; height: 140px; }
   .big-button-top { width: 120px; height: 120px; }
-  .big-button-base { width: 130px; }
   .big-button-label { font-size: 1.2rem; }
 }
 

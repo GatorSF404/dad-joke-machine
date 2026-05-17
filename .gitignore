@@ -8,3 +8,4 @@ backend/node_modules/
 .idea/
 /tmp/
 .claude/settings.local.json
+INTERVIEW_PREP.md

@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sound Picker — The Dad Jokes Machine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; min-height: 100%; font-family: 'Patrick Hand', system-ui, sans-serif; }
+    body {
+      background: radial-gradient(ellipse at top, #fef3c7 0%, #fbbf24 60%, #f59e0b 100%);
+      background-attachment: fixed;
+      color: #1f2937;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    h1 {
+      font-family: 'Bungee', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: #fff;
+      text-shadow: 3px 3px 0 #dc2626, 5px 5px 0 #991b1b;
+      text-align: center;
+      margin: 0 0 0.5rem;
+      transform: rotate(-1.5deg);
+    }
+    .sub {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #78350f;
+      margin: 0 0 2rem;
+    }
+    .option {
+      background: #fffdf5;
+      border: 3px solid #1f2937;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1rem 0;
+      box-shadow: 0 5px 0 #92400e, 0 10px 18px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .option-text { flex: 1; }
+    .option-text h2 {
+      font-family: 'Bungee', sans-serif;
+      font-size: 1.1rem;
+      color: #dc2626;
+      margin: 0 0 0.3rem;
+    }
+    .option-text p {
+      font-size: 1.1rem;
+      margin: 0;
+      color: #1f2937;
+    }
+    .play-btn {
+      font-family: 'Bungee', sans-serif;
+      background: #dc2626;
+      color: #fff;
+      border: 3px solid #7f1d1d;
+      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+      font-size: 1rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 5px 0 #7f1d1d;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+    }
+    .play-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #7f1d1d; }
+    .play-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #7f1d1d; }
+    .note {
+      margin-top: 2.5rem;
+      padding: 1rem 1.25rem;
+      background: rgba(255,255,255,0.5);
+      border-left: 4px solid #dc2626;
+      font-size: 1.05rem;
+      color: #451a03;
+    }
+    .note code { background: #fef3c7; padding: 0 0.3rem; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Sound Picker</h1>
+    <p class="sub">Click a button to hear it. Pick the one you like best.</p>
+
+    <div class="option">
+      <div class="option-text">
+        <h2>1. Current Ding</h2>
+        <p>Quick two-tone descending chime. Clean and simple. (What's there today.)</p>
+      </div>
+      <button class="play-btn" data-sound="current">PLAY</button>
+    </div>
+
+    <div class="option">
+      <div class="option-text">
+        <h2>2. Typewriter Bell</h2>
+        <p>That single metallic ring at the end of a typewriter line. Fits the "paper just printed" vibe.</p>
+      </div>
+      <button class="play-btn" data-sound="typewriter">PLAY</button>
+    </div>
+
+    <div class="option">
+      <div class="option-text">
+        <h2>3. Rimshot (ba-dum-tss)</h2>
+        <p>The classic dad-joke drum sting. Most on-brand. Might be too literal — your call.</p>
+      </div>
+      <button class="play-btn" data-sound="rimshot">PLAY</button>
+    </div>
+
+    <div class="option">
+      <div class="option-text">
+        <h2>4. Game Show Chime</h2>
+        <p>Three ascending notes. Cheerful, rewarding, "you got it right!"</p>
+      </div>
+      <button class="play-btn" data-sound="gameshow">PLAY</button>
+    </div>
+
+    <div class="option">
+      <div class="option-text">
+        <h2>5. Cash Register Ka-Ching</h2>
+        <p>Multiple bell tones ringing together. Triumphant and a little tongue-in-cheek.</p>
+      </div>
+      <button class="play-btn" data-sound="kaching">PLAY</button>
+    </div>
+
+    <div class="option">
+      <div class="option-text">
+        <h2>6. Retro 8-Bit Beep</h2>
+        <p>Old-arcade "task complete" blip. Nintendo-coin nostalgia.</p>
+      </div>
+      <button class="play-btn" data-sound="bit8">PLAY</button>
+    </div>
+
+    <div class="note">
+      <strong>Pick your favorite</strong> and tell Brian which number. He'll wire it into the main app and remove this page.
+    </div>
+  </div>
+
+  <script>
+    let ctx;
+    function getCtx() {
+      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+
+    const sounds = {
+      current() {
+        const c = getCtx(); const now = c.currentTime;
+        const osc = c.createOscillator(); const gain = c.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1760, now);
+        osc.frequency.exponentialRampToValueAtTime(1320, now + 0.4);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.18, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+        osc.connect(gain).connect(c.destination);
+        osc.start(now); osc.stop(now + 0.55);
+      },
+
+      typewriter() {
+        const c = getCtx(); const now = c.currentTime;
+        // Main bell tone
+        const o1 = c.createOscillator(); const g1 = c.createGain();
+        o1.type = 'triangle'; o1.frequency.value = 1800;
+        g1.gain.setValueAtTime(0.0001, now);
+        g1.gain.exponentialRampToValueAtTime(0.28, now + 0.005);
+        g1.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+        o1.connect(g1).connect(c.destination);
+        o1.start(now); o1.stop(now + 0.95);
+        // Harmonic overtone for metallic ring
+        const o2 = c.createOscillator(); const g2 = c.createGain();
+        o2.type = 'sine'; o2.frequency.value = 3600;
+        g2.gain.setValueAtTime(0.0001, now);
+        g2.gain.exponentialRampToValueAtTime(0.1, now + 0.005);
+        g2.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+        o2.connect(g2).connect(c.destination);
+        o2.start(now); o2.stop(now + 0.55);
+      },
+
+      rimshot() {
+        const c = getCtx(); const now = c.currentTime;
+        function snare(t, isCymbal) {
+          // Noise burst
+          const buf = c.createBuffer(1, c.sampleRate * 0.25, c.sampleRate);
+          const data = buf.getChannelData(0);
+          const decay = isCymbal ? 0.18 : 0.06;
+          for (let i = 0; i < data.length; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * decay));
+          }
+          const noise = c.createBufferSource(); noise.buffer = buf;
+          const filter = c.createBiquadFilter();
+          filter.type = 'highpass';
+          filter.frequency.value = isCymbal ? 4000 : 1200;
+          const gain = c.createGain();
+          gain.gain.setValueAtTime(0.0001, t);
+          gain.gain.exponentialRampToValueAtTime(isCymbal ? 0.25 : 0.35, t + 0.003);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + (isCymbal ? 0.4 : 0.15));
+          noise.connect(filter).connect(gain).connect(c.destination);
+          noise.start(t); noise.stop(t + 0.5);
+          // Tonal punch for snare
+          if (!isCymbal) {
+            const click = c.createOscillator(); const cg = c.createGain();
+            click.type = 'triangle';
+            click.frequency.setValueAtTime(220, t);
+            click.frequency.exponentialRampToValueAtTime(80, t + 0.08);
+            cg.gain.setValueAtTime(0.0001, t);
+            cg.gain.exponentialRampToValueAtTime(0.35, t + 0.002);
+            cg.gain.exponentialRampToValueAtTime(0.0001, t + 0.1);
+            click.connect(cg).connect(c.destination);
+            click.start(t); click.stop(t + 0.12);
+          }
+        }
+        snare(now, false);          // BA
+        snare(now + 0.14, false);   // DUM
+        snare(now + 0.30, true);    // TSSSS
+      },
+
+      gameshow() {
+        const c = getCtx(); const now = c.currentTime;
+        const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+        notes.forEach((freq, i) => {
+          const t = now + i * 0.12;
+          const osc = c.createOscillator(); const gain = c.createGain();
+          osc.type = 'triangle'; osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.0001, t);
+          gain.gain.exponentialRampToValueAtTime(0.2, t + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+          osc.connect(gain).connect(c.destination);
+          osc.start(t); osc.stop(t + 0.5);
+        });
+      },
+
+      kaching() {
+        const c = getCtx(); const now = c.currentTime;
+        // Bell-like cluster with slight detuning
+        [880, 1320, 1760, 2200].forEach((freq, i) => {
+          const osc = c.createOscillator(); const gain = c.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq * (1 + (i - 1) * 0.008);
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(0.14 / (i * 0.5 + 1), now + 0.005);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.3);
+          osc.connect(gain).connect(c.destination);
+          osc.start(now); osc.stop(now + 1.35);
+        });
+        // Initial "click" of the register mechanism
+        const click = c.createOscillator(); const cg = c.createGain();
+        click.type = 'square'; click.frequency.value = 110;
+        cg.gain.setValueAtTime(0.0001, now);
+        cg.gain.exponentialRampToValueAtTime(0.2, now + 0.002);
+        cg.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+        click.connect(cg).connect(c.destination);
+        click.start(now); click.stop(now + 0.05);
+      },
+
+      bit8() {
+        const c = getCtx(); const now = c.currentTime;
+        const notes = [523.25, 783.99, 1046.5, 1568]; // C5, G5, C6, G6
+        notes.forEach((freq, i) => {
+          const t = now + i * 0.07;
+          const osc = c.createOscillator(); const gain = c.createGain();
+          osc.type = 'square'; osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.0001, t);
+          gain.gain.exponentialRampToValueAtTime(0.08, t + 0.005);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+          osc.connect(gain).connect(c.destination);
+          osc.start(t); osc.stop(t + 0.1);
+        });
+      },
+    };
+
+    document.querySelectorAll('.play-btn').forEach(btn => {
+      btn.addEventListener('click', () => sounds[btn.dataset.sound]?.());
+    });
+  </script>
+</body>
+</html>

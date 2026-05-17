@@ -13,8 +13,25 @@
     status: document.getElementById('statusText'),
   };
 
+  // Persist the "recent jokes" list to localStorage so anti-repeat memory
+  // survives page reloads, tab closes, and even browser restarts. Without
+  // this, every reload starts from scratch and the same joke can show again
+  // on the very next press.
+  const RECENT_KEY = 'djm:recent';
+  const RECENT_MAX = 150;
+  function loadRecent() {
+    try {
+      const raw = localStorage.getItem(RECENT_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch { return []; }
+  }
+  function saveRecent() {
+    try { localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); } catch {}
+  }
+
   let jokes = [];
-  let recent = [];
+  let recent = loadRecent();
   let audioCtx = null;
   let isRunning = false;
   let pressCount = 0;
@@ -75,8 +92,7 @@
 
   function pickJoke() {
     if (jokes.length === 0) return "Loading jokes... try again in a sec.";
-    // Avoid repeating the last ~50 jokes
-    const memory = Math.min(50, Math.floor(jokes.length / 2));
+    const memory = Math.min(RECENT_MAX, Math.floor(jokes.length / 2));
     let candidate;
     let attempts = 0;
     do {
@@ -85,6 +101,7 @@
     } while (recent.includes(candidate.id) && attempts < 20);
     recent.push(candidate.id);
     if (recent.length > memory) recent.shift();
+    saveRecent();
     return candidate.joke;
   }
 

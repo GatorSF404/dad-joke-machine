@@ -227,7 +227,7 @@
         <div class="about-modal-inner">
           <h2>The Dad Jokes Machine</h2>
           <p>A wholly unnecessary contraption that delivers dad jokes via a fictional steam-powered process.</p>
-          <p style="font-size:0.95rem;opacity:0.8;">Jokes sourced from <a href="https://icanhazdadjoke.com" target="_blank" rel="noopener">icanhazdadjoke.com</a>. Rendered fresh. Reheated on demand.</p>
+          <p style="font-size:0.95rem;opacity:0.8;">Jokes sourced from <a href="https://icanhazdadjoke.com" target="_blank" rel="noopener">icanhazdadjoke.com</a>. Rendered fresh. Reheated on demand. — Brian</p>
           <button type="button" id="aboutClose">Close</button>
         </div>`;
       document.body.appendChild(modal);
